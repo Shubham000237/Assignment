@@ -1,0 +1,1 @@
+export {default as config} from '../Utils/Config/config';
