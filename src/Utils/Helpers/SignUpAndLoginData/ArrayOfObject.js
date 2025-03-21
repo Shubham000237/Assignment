@@ -97,9 +97,9 @@ export const stopWatchButton = [
   },
   {
     icon: "RestoreIcon",
-    action: (setStatus) => {
-      setStatus(true);
-      setTimeout(0);    
+    action: (setStatus, setTime) => {
+      setStatus(false);
+      setTime(0);    
     },
   },
 ]

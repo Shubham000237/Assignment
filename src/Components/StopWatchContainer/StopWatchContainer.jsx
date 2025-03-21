@@ -12,19 +12,18 @@ export const StopWatchContainer = () => {
     const [time, setTime] = useState(0);
     const [status, setStatus] = useState(false);
 
-    const timeformat = (time) => ("0" + time).slice(-2)
+    const timeformat = (e) => ("0" + e).slice(-2)
     const hours = Math.floor(time / 3600)
     const minutes = Math.floor((time % 3600) / 60)
     const seconds = Math.floor(time % 60)
 
     useEffect(() => {
-        let interval;
         if (status) {
-            interval = setInterval(() => {
-                setTime(prevTime => prevTime + 1);
+            var interval = setInterval(() => {
+                setTime(prevState => prevState + 1);
             }, 1000);
         } else if (!status && time !== 0) {
-            clearInterval(interval);
+            // clearInterval(interval);
         }
         return () => clearInterval(interval);
     }, [status, time]);
@@ -35,22 +34,25 @@ export const StopWatchContainer = () => {
         RestoreIcon: RestoreIcon,
     };
 
+    const timeVal = { hours, minutes, seconds };
+
     return (
         <>
             <Box className="stopwatch-heading"><h2>Stop-Watch</h2></Box>
             <Box className="container">
-                {stopWatchLabels.map((e, index) => (
-                    <Box key={index} className="section">
-                        <Typography ml={e.margin} className="label">{e.label}</Typography>
-                        <br /><span className="digits">{timeformat(eval(e.key))}{index < 2 ? ":" : ""}</span>
-                    </Box>
-                ))}
+                {stopWatchLabels.map((e, index) => {
+                    return (
+                        <Box key={index} className="section">
+                            <Typography ml={e.margin} className="label">{e.label}</Typography>
+                            <br /><span className="digits">{timeformat(timeVal[e.key])}{index < 2 ? ":" : ""}</span>
+                        </Box>
+                    )
+                })}
             </Box>
-            <Stack direction="row" spacing={4} justifyContent={"center"} className='iconComponentContainer'>
+            <Stack direction="row" spacing={4}  className='iconComponentContainer'>
                 {stopWatchButton.map((e) => {
                     const IconComponent = iconMap[e.icon];
                     return (
-
                         <Typography onClick={() => e.action(setStatus, setTime)}><IconComponent style={{ fontSize: "clamp(30px, 8vw, 57px)", minWidth: '40px', color: 'black', cursor: 'pointer' }} /></Typography>
                     )
                 })}
