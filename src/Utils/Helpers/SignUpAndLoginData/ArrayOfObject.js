@@ -71,53 +71,43 @@ export const toDoField = [
 
 export const cardField = [
   {
-    component:"a",
-    href:"https://www.chess.com/play/computer",
-    target:"_blank",
-    rel:"noopener noreferrer",
-    image:"https://static.vecteezy.com/system/resources/previews/000/459/088/original/vector-chess-game-realistic.jpg"
+    component: "a",
+    href: "https://www.chess.com/play/computer",
+    target: "_blank",
+    rel: "noopener noreferrer",
+    image: "https://static.vecteezy.com/system/resources/previews/000/459/088/original/vector-chess-game-realistic.jpg"
   },
   {
-    component:"a",
-    href:"https://www.flashsnooker.com/html5/index.html?ts=1740636044284",
-    target:"_blank",
-    rel:"noopener noreferrer",
-    image:"https://cuesportsacademy.ca/wp-content/uploads/2020/08/h1-rev-background-img.jpg"
+    component: "a",
+    href: "https://www.flashsnooker.com/html5/index.html?ts=1740636044284",
+    target: "_blank",
+    rel: "noopener noreferrer",
+    image: "https://cuesportsacademy.ca/wp-content/uploads/2020/08/h1-rev-background-img.jpg"
   },
 ]
 
 export const stopWatchButton = [
   {
-    icon: "PlayArrowIcon",
-    action: (setStatus) => setStatus(true),
+    icon: ("PlayArrowIcon", "PauseIcon"),
+    action: ((setStatus) => setStatus(true),(setStatus) => setStatus(false)),
   },
-  {
-    icon: "PauseIcon",
-    action: (setStatus) => setStatus(false),
-  },
-  {
-    icon: "RestoreIcon",
-    action: (setStatus, setTime) => {
-      setStatus(false);
-      setTime(0);    
-    },
-  },
+
 ]
 
 export const stopWatchLabels = [
-  { 
-    label: "Hour", 
-    key: "hours", 
-    margin: -5 
+  {
+    label: "Hour",
+    key: "hours",
+    margin: -5
   },
-  { 
-    label: "Minutes", 
-    key: "minutes", 
-    margin: -5 
+  {
+    label: "Minutes",
+    key: "minutes",
+    margin: -5
   },
-  { 
-    label: "Seconds", 
-    key: "seconds", 
-    margin: 0 
+  {
+    label: "Seconds",
+    key: "seconds",
+    margin: 0
   }
 ];

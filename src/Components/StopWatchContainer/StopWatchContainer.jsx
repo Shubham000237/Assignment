@@ -18,23 +18,23 @@ export const StopWatchContainer = () => {
     const seconds = Math.floor(time % 60)
 
     useEffect(() => {
-        if (status) {
+        if (status === true) {
             var interval = setInterval(() => {
                 setTime(prevState => prevState + 1);
             }, 1000);
-        } else if (!status && time !== 0) {
+        } else if (status === false && time !== 0) {
             // clearInterval(interval);
         }
         return () => clearInterval(interval);
     }, [status, time]);
 
-    const iconMap = {
+    const _ = {
         PlayArrowIcon: PlayArrowIcon,
-        PauseIcon: PauseIcon,
-        RestoreIcon: RestoreIcon,
+        PauseIcon: PauseIcon
     };
 
     const timeVal = { hours, minutes, seconds };
+    const togglePlayPause = () => setStatus((prevStatus) => !prevStatus);
 
     return (
         <>
@@ -49,13 +49,25 @@ export const StopWatchContainer = () => {
                     )
                 })}
             </Box>
-            <Stack direction="row" spacing={4}  className='iconComponentContainer'>
+            <Stack direction="row" spacing={4} className='iconComponentContainer'>
                 {stopWatchButton.map((e) => {
-                    const IconComponent = iconMap[e.icon];
-                    return (
-                        <Typography onClick={() => e.action(setStatus, setTime)}><IconComponent style={{ fontSize: "clamp(30px, 8vw, 57px)", minWidth: '40px', color: 'black', cursor: 'pointer' }} /></Typography>
-                    )
+                    // const IconComponent = status ? iconMap.PauseIcon : iconMap.PlayArrowIcon;
+                    if (e.icon === 'PlayArrowIcon' || e.icon === 'PauseIcon') {
+
+                        return (
+                            <Typography onClick={togglePlayPause}>
+                                {status ? (
+                                    <PauseIcon style={{ fontSize: "clamp(30px, 8vw, 57px)", minWidth: '40px', color: 'black', cursor: 'pointer' }} />
+                                ) : (
+                                    <PlayArrowIcon style={{ fontSize: "clamp(30px, 8vw, 57px)", minWidth: '40px', color: 'black', cursor: 'pointer' }} />
+                                )}
+                            </Typography>
+                        )
+                    }
                 })}
+                <Typography onClick={() => { setStatus(false); setTime(0); }}>
+                    <RestoreIcon style={{ fontSize: "clamp(30px, 8vw, 57px)", minWidth: '40px', color: 'black', cursor: 'pointer' }} />
+                </Typography>
             </Stack>
         </>
     );
