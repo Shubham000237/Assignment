@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Typography, Stack } from "@mui/material";
-
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import PauseIcon from '@mui/icons-material/Pause';
 import RestoreIcon from '@mui/icons-material/Restore';
-import { stopWatchButton } from '../../Utils/Helpers/SignUpAndLoginData/ArrayOfObject';
+
 import { stopWatchLabels } from '../../Utils/Helpers/SignUpAndLoginData/ArrayOfObject';
 import './StopWatchStyle.css';
 
@@ -22,16 +21,9 @@ export const StopWatchContainer = () => {
             var interval = setInterval(() => {
                 setTime(prevState => prevState + 1);
             }, 1000);
-        } else if (status === false && time !== 0) {
-            // clearInterval(interval);
         }
         return () => clearInterval(interval);
     }, [status, time]);
-
-    const _ = {
-        PlayArrowIcon: PlayArrowIcon,
-        PauseIcon: PauseIcon
-    };
 
     const timeVal = { hours, minutes, seconds };
     const togglePlayPause = () => setStatus((prevStatus) => !prevStatus);
@@ -42,29 +34,20 @@ export const StopWatchContainer = () => {
             <Box className="container">
                 {stopWatchLabels.map((e, index) => {
                     return (
-                        <Box key={index} className="section">
-                            <Typography ml={e.margin} className="label">{e.label}</Typography>
+                        <Box key={index}>
+                            <Typography ml={4} className="label">{e.label}</Typography>
                             <br /><span className="digits">{timeformat(timeVal[e.key])}{index < 2 ? ":" : ""}</span>
                         </Box>
                     )
                 })}
             </Box>
             <Stack direction="row" spacing={4} className='iconComponentContainer'>
-                {stopWatchButton.map((e) => {
-                    // const IconComponent = status ? iconMap.PauseIcon : iconMap.PlayArrowIcon;
-                    if (e.icon === 'PlayArrowIcon' || e.icon === 'PauseIcon') {
-
-                        return (
-                            <Typography onClick={togglePlayPause}>
-                                {status ? (
-                                    <PauseIcon style={{ fontSize: "clamp(30px, 8vw, 57px)", minWidth: '40px', color: 'black', cursor: 'pointer' }} />
-                                ) : (
-                                    <PlayArrowIcon style={{ fontSize: "clamp(30px, 8vw, 57px)", minWidth: '40px', color: 'black', cursor: 'pointer' }} />
-                                )}
-                            </Typography>
-                        )
-                    }
-                })}
+                <Box onClick={togglePlayPause}>
+                    {status ? (<PauseIcon style={{ fontSize: "clamp(30px, 8vw, 57px)", minWidth: '40px', color: 'black', cursor: 'pointer' }}/>)
+                    : 
+                    (<PlayArrowIcon style={{ fontSize: "clamp(30px, 8vw, 57px)", minWidth: '40px', color: 'black', cursor: 'pointer' }}/>)}
+                    
+                </Box>
                 <Typography onClick={() => { setStatus(false); setTime(0); }}>
                     <RestoreIcon style={{ fontSize: "clamp(30px, 8vw, 57px)", minWidth: '40px', color: 'black', cursor: 'pointer' }} />
                 </Typography>

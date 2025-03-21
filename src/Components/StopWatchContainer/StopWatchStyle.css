@@ -6,9 +6,6 @@
     margin-bottom: 15px;
 }
 
-.section {
-    text-align: center;
-}
 
 .label {
     font-size: clamp(18px, 2.5vw, 40px);

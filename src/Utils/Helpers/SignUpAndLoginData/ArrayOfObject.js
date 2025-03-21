@@ -86,24 +86,16 @@ export const cardField = [
   },
 ]
 
-export const stopWatchButton = [
-  {
-    icon: ("PlayArrowIcon", "PauseIcon"),
-    action: ((setStatus) => setStatus(true),(setStatus) => setStatus(false)),
-  },
-
-]
-
 export const stopWatchLabels = [
   {
     label: "Hour",
     key: "hours",
-    margin: -5
+    
   },
   {
     label: "Minutes",
     key: "minutes",
-    margin: -5
+    
   },
   {
     label: "Seconds",
