@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { Helper } from '../../Utils/Helpers/Helper';
 import TextFieldComponent from '../../Components/TextFieldComponent/TextFieldComponent';
-import { formFields } from '../../Utils/Helpers/SignUpAndLoginData/ArrayOfObject';
+import { FormFields } from '../../Utils/Helpers/ObjectList/FormFields';
 import PasswordField from "../../Utils/Helpers/PasswordComponent/PasswordField";
 import { config } from "../../Utils/Config/config";
 import localStorageHelper from '../../Components/LocalStorageHelper/LocalStorageHelper'
@@ -13,7 +13,7 @@ import './SignUpStyle.css'
 const SignUp = () => {
     const navigate = useNavigate();
     const [data, setData] = useState(() => {
-        const initialState = formFields.reduce((e, field) => {
+        const initialState = FormFields.reduce((e, field) => {
             e[field.name] = "";
             return e;
         }, {});
@@ -82,7 +82,7 @@ const SignUp = () => {
                     Registration Form
                 </Typography>
                 <Box alignItems="center">
-                    {formFields.map((field) => (
+                    {FormFields.map((field) => (
                         <Box key={field.name} mb={2}>
                             {field.name === "password" || field.name === "confirmpassword" ? (
                                 <PasswordField

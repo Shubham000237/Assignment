@@ -4,22 +4,22 @@ import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import PauseIcon from '@mui/icons-material/Pause';
 import RestoreIcon from '@mui/icons-material/Restore';
 
-import { stopWatchLabels } from '../../Utils/Helpers/SignUpAndLoginData/ArrayOfObject';
+import { StopWatchLabels } from '../../Utils/Helpers/ObjectList/StopWatchLabels';
 import './StopWatchStyle.css';
 
 export const StopWatchContainer = () => {
     const [time, setTime] = useState(0);
     const [status, setStatus] = useState(false);
 
-    const timeformat = (e) => ("0" + e).slice(-2)
+    const timeformat = (event) => ("0" + event).slice(-2)
     const hours = Math.floor(time / 3600)
     const minutes = Math.floor((time % 3600) / 60)
     const seconds = Math.floor(time % 60)
 
     useEffect(() => {
-        if (status === true) {
+        if (status===true) {
             var interval = setInterval(() => {
-                setTime(prevState => prevState + 1);
+                setTime(prevTime => prevTime + 1);
             }, 1000);
         }
         return () => clearInterval(interval);
@@ -32,11 +32,14 @@ export const StopWatchContainer = () => {
         <>
             <Box className="stopwatch-heading"><h2>Stop-Watch</h2></Box>
             <Box className="container">
-                {stopWatchLabels.map((e, index) => {
+                {StopWatchLabels.map((e, index) => {
+                    const a = timeformat(timeVal[e.key])
+                    const b = index < 2 ? ":" : ""
                     return (
                         <Box key={index}>
-                            <Typography ml={4} className="label">{e.label}</Typography>
-                            <br /><span className="digits">{timeformat(timeVal[e.key])}{index < 2 ? ":" : ""}</span>
+                            <Typography ml={8} className="label">{e.label}</Typography>
+                            <br />
+                            <span className="digits">{a}{b}</span>
                         </Box>
                     )
                 })}

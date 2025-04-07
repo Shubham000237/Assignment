@@ -15,7 +15,7 @@ import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import { config } from "../../Utils/Config/config";
 import TextFieldComponent from "../../Components/TextFieldComponent/TextFieldComponent";
 import Toggle from "../../Utils/Helpers/TodoToggleStatusCompoenent/Toggle";
-import { toDoField } from "../../Utils/Helpers/SignUpAndLoginData/ArrayOfObject";
+import { ToDoField } from "../../Utils/Helpers/ObjectList/ToDoField";
 import localStorageHelper from "../../Components/LocalStorageHelper/LocalStorageHelper";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from './TodoStyle'
@@ -29,7 +29,7 @@ const Todo = () => {
 
         return userData[loggedInUser.email]?.tasks || [];
     };
-    const userKey = loggedInUser.email ? `user-${loggedInUser.email}` : null;
+    const userKey = loggedInUser?.email ? `user-${loggedInUser.email}` : null;
     const [tasks, setTasks] = useState(getStoredTasks);
     const [filters, setFilters] = useState({ status: "all", page: 1 });
     const [taskInput, setTaskInput] = useState({ text: "", id: null });
@@ -138,7 +138,7 @@ const Todo = () => {
                         </Typography>
 
                         {/* Task Input */}
-                        {toDoField.map((item) => (
+                        {ToDoField.map((item) => (
                             <TextFieldComponent
                                 key={item.label}
                                 fullWidth={item.fullWidth}

@@ -1,0 +1,12 @@
+.calculator {
+    width: 30vw;
+    height: 73vh;
+    margin: 20px;
+    margin-left: 28vw;
+    padding: 8px;
+    border: 2px solid #050505;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    justify-content: center;
+    background-color: #504d4d;
+}

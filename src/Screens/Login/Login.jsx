@@ -5,10 +5,10 @@ import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 import { Helper } from '../../Utils/Helpers/Helper';
 import { config } from '../../Utils/Config/config';
-import { loginField } from '../../Utils/Helpers/SignUpAndLoginData/ArrayOfObject';
-import TextFieldComponent from '../../Components/TextFieldComponent/TextFieldComponent';
+import { LoginField } from '../../Utils/Helpers/ObjectList/LoginField';
 import localStorageHelper from '../../Components/LocalStorageHelper/LocalStorageHelper';
 import './LoginStyle.css'
+import { TextFieldComponent } from '../../Components';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -122,7 +122,7 @@ const Login = () => {
         <Typography variant="h5" align="center" gutterBottom className="loginText">
           Login
         </Typography>
-        {loginField.map((field) => (
+        {LoginField.map((field) => (
           <Box key={field.name} sx={{ mb: 2 }}>
             {field.name === 'password' ? (
               <TextField

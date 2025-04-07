@@ -3,14 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { Box, Button, Typography, Card, CardActionArea, CardMedia, CardContent } from "@mui/material";
 
 import localStorageHelper from '../../Components/LocalStorageHelper/LocalStorageHelper'
-import { cardField } from "../../Utils/Helpers/SignUpAndLoginData/ArrayOfObject"
+import { CardField } from "../../Utils/Helpers/ObjectList/CardField"
 import './DashboardStyle.css'
 import { config } from "../../Utils/Config/config";
 
 const Dashboard = () => {
     const navigate = useNavigate();
     const [user, setUser] = useState(null);
-    
+
     // Function to fetch the logged-in user from localStorage
     const fetchUser = () => {
         const usersData = localStorage.getItem("users");
@@ -79,69 +79,32 @@ const Dashboard = () => {
             </Box>
             {/* To-Do Section */}
             <Box display="flex" flexWrap="wrap" gap={5} justifyContent="center">
-                <Card sx={{ maxWidth: 400 }}
-                    display="flex"
-                    justifyContent="center"
-                    gap={{ xs: 2, sm: 2, md: 15 }}
-                    className="boxSlot">
-                    <CardActionArea>
-                        <CardMedia
-                            component="img"
-                            height="140"
-                            width="140"
-                            image="https://static.vecteezy.com/system/resources/previews/014/457/026/original/notebook-label-to-do-list-icon-clipart-in-cartoon-animated-vector.jpg"
-                            alt="to-do"
-                        />
-                        <CardContent>
-                            <Typography gutterBottom variant="h5" component="div">
-                                <Button size="small" sx={{ marginLeft: 3, textTransform: 'none' }} onClick={() => navigate("/Todo")}>To-Do</Button>
-                            </Typography>
-
-                        </CardContent>
-                    </CardActionArea>
-                </Card>
-                {cardField.map((e, index) => (
+                {CardField.map((e, index) => (
                     <Card key={index} sx={{ maxWidth: 170 }}>
                         <CardActionArea component={e.component} href={e.href} target={e.target} rel={e.rel}>
                             <CardMedia
                                 component="img"
-                                height="140"
-                                width="140"
+                                height={e.height}
+                                width={e.width}
                                 image={e.image}
                                 alt={`Image for ${e.href}`}
                             />
                             <CardContent>
                                 <Typography gutterBottom variant="h5" component="div">
-                                    <Button size="small" sx={{ marginLeft: 3, textTransform: 'none' }}>
-                                        {e.href.includes("chess") && "Chess"}
-                                        {e.href.includes("snooker") && "Snooker"}
+                                    <Button size="small" sx={{ marginLeft: 3, textTransform: 'none' }}
+                                        onClick={() => { if (e.action) { e.action(navigate) } }}
+                                    >
+                                        {e.image && e.image.includes("to-do") && "To-Do"}
+                                        {e.href && e.href.includes("chess") && "Chess"}
+                                        {e.image && e.image.includes("stopwatch") && "Stopwatch"}
+                                        {e.image && e.image.includes("calculator") && "Calculator"}
+                                        {e.image && e.image.includes("kbg") && "QR Code"}
                                     </Button>
                                 </Typography>
                             </CardContent>
                         </CardActionArea>
                     </Card>
                 ))}
-                <Card sx={{ maxWidth: 400 }}
-                    display="flex"
-                    justifyContent="center"
-                    gap={{ xs: 2, sm: 2, md: 15 }}
-                    className="boxSlot">
-                    <CardActionArea>
-                        <CardMedia
-                            component="img"
-                            height="140"
-                            width="140"
-                            image="https://www.shutterstock.com/image-vector/stopwatch-stop-watch-timer-flat-600nw-355549763.jpg"
-                            alt="stopwatch"
-                        />
-                        <CardContent>
-                            <Typography gutterBottom variant="h5" component="div">
-                                <Button size="small" sx={{ marginLeft: 2, textTransform: 'none' }} onClick={() => navigate("/stopwatch")}>Stop-watch</Button>
-                            </Typography>
-
-                        </CardContent>
-                    </CardActionArea>
-                </Card>
             </Box>
         </Box>
     );
