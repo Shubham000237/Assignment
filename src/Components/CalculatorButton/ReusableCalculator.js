@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
-import { TextField, Box, Stack } from '@mui/material'
+import { Box, Stack, TextField } from '@mui/material'
 
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import WbSunnyIcon from '@mui/icons-material/WbSunny';
-import BackspaceOutlinedIcon from '@mui/icons-material/BackspaceOutlined';
 import { config } from '../../Utils/Config/config'
 import { ReusableCalculatorButtons } from './ReusableCalculatorButtons';
+import { CalculatorField } from '../../Utils/Helpers/ObjectList/CalculatorField';
+import CustomCalcTextField from '../CalculatorTextField/CustomCalcTextField';
 
 const ReusableCalculator = () => {
     const [state, setState] = useState({
@@ -21,6 +22,24 @@ const ReusableCalculator = () => {
             mode: astate.mode === 'light' ? 'dark' : 'light',
         }));
     }
+
+    const handleButtonClick = (value) => {
+        // Use ternary logic for each button action
+        if (value === "AC") {
+            setState({ ...state, data: "", lastResult: null });
+        } else if (value === "%") {
+            handlePercentage();
+        } else if (value === "clr") {
+            Delete();
+        } else if (value === "=") {
+            result();
+        }else if (value === "toggle") {
+            Toggle();
+        } 
+        else {
+            handleCalculatorInput(value);
+        }
+    };
 
     const getCustomColor = () => {
         const { mode } = state;
@@ -51,36 +70,36 @@ const ReusableCalculator = () => {
         }
 
         if (!config.Regex.operatorCheck.test(dataStr)) {
-            const Val = parseFloat(dataStr);
-            const Val1 = Val / 100;
+            const Value = parseFloat(dataStr);
+            const firstValue = Value / 100;
             setState((astate) => ({
                 ...astate,
-                data: `${String(Val1)}`,
-                lastResult: String(Val1)
+                data: `${String(firstValue)}`,
+                lastResult: firstValue
             }));
             return;
         }
 
         const operator = dataStr.match(config.Regex.operatorMatch) || [];
-        const Val1 = dataStr.split(config.Regex.operatorCheck).filter(Boolean);
-        const Val2 = parseFloat(Val1[0]) || 0;
-        const Val3 = parseFloat(Val1[1]) || 0;
-        const parts = parseFloat(Val1[2]) || 0;
+        const operand = dataStr.split(config.Regex.operatorCheck).filter(Boolean);
+        const firstOperand = parseFloat(operand[0]) || 0;
+        const secondOperand = parseFloat(operand[1]) || 0;
+        const thirdOperand = parseFloat(operand[2]) || 0;
         let finalResult;
 
-        if (isNaN(Val2) || isNaN(Val3)) return;
+        if (isNaN(firstOperand) || isNaN(secondOperand)) return;
 
         if (operator.length === 1) {
             let finalResult;
 
             if (operator[0] === "+") {
-                finalResult = Val2 + (Val2 * (Val3 / 100));
+                finalResult = firstOperand + (firstOperand * (secondOperand / 100));
             } else if (operator[0] === "-") {
-                finalResult = Val2 - (Val2 * (Val3 / 100));
+                finalResult = firstOperand - (firstOperand * (secondOperand / 100));
             } else if (operator[0] === "*") {
-                finalResult = Val2 * (Val3 / 100);
+                finalResult = firstOperand * (secondOperand / 100);
             } else if (operator[0] === "/") {
-                finalResult = Val2 / (Val3 / 100);
+                finalResult = firstOperand / (secondOperand / 100);
             } else {
                 return;
             }
@@ -94,22 +113,21 @@ const ReusableCalculator = () => {
             let firstResult;
 
             if (operator[1] === "*") {
-                firstResult = Val3 * (parts / 100);
+                firstResult = secondOperand * (thirdOperand / 100);
             } else if (operator[1] === "/") {
-                firstResult = Val3 / (parts / 100);
+                firstResult = secondOperand / (thirdOperand / 100);
             } else {
                 return;
             }
 
-
             if (operator[0] === "+") {
-                finalResult = Val2 + firstResult;
+                finalResult = firstOperand + firstResult;
             } else if (operator[0] === "-") {
-                finalResult = Val2 - firstResult;
+                finalResult = firstOperand - firstResult;
             } else if (operator[0] === "/") {
-                finalResult = Val2 / firstResult;
+                finalResult = firstOperand / firstResult;
             } else if (operator[0] === "*") {
-                finalResult = Val2 * firstResult;
+                finalResult = firstOperand * firstResult;
             } else {
                 return;
             }
@@ -120,19 +138,21 @@ const ReusableCalculator = () => {
 
     const { backgroundColor, buttonColor, operatorButtonColor, textColor, borderColor } = getCustomColor();
 
-    const Val = (value) => {
+    const handleCalculatorInput = (value) => {
         const { a: operatorPattern, dots: dotsPattern } = config.Regex;
-        const updatedValue = (state.data + value).replace(config.Regex.valRegex, "");
-        const val = updatedValue.replace(dotsPattern, ".");
+        const input = state.data + value
+        const updatedValue = input.replace((config.Regex.valRegex), "");
+        const cleanedValue = updatedValue.replace(config.Regex.valRegex1, "")
+        const finalValue = cleanedValue.replace(dotsPattern, ".");
 
         if (value === '.') {
-            const lastNumber = state.data.split(config.Regex.b).pop();
+            const lastNumber = input.split(config.Regex.b).pop();
             if (lastNumber.includes('.')) {
                 return;
             }
         }
 
-        if (value === '.' && (state.data === "" || /[+\-*/]$/.test(state.data))) {
+        if (value === '.' && (input === "" || config.Regex.dataStr.test(input))) {
             setState((astate) =>
             ({
                 ...astate,
@@ -179,7 +199,7 @@ const ReusableCalculator = () => {
 
         setState((astate) => ({
             ...astate,
-            data: val,
+            data: finalValue,
         }));
     };
 
@@ -266,32 +286,14 @@ const ReusableCalculator = () => {
                         label={""}
                         type="text"
                         value={state.data}
-                        sx={{ maxWidth: '400px', marginBottom: 1, ml: { sm: 0.5, md: 3.8 }, backgroundColor: 'white', input: { textAlign: 'right', fontSize: 'clamp(16px, 2vw, 24px)' }, borderRadius: '4px' }}
+                        sx={{ maxWidth: '400px', marginBottom: 1, ml: { sm: 0.5, md: 5 }, backgroundColor: 'white', input: { textAlign: 'right', fontSize: 'clamp(16px, 2vw, 24px)' }, borderRadius: '4px' }}
                         variant="outlined"
                         onChange={(event) => {
-                            const { a: operatorPattern } = config.Regex;
                             const value = event.target.value;
 
-                            if (/^[+*/%]/.test(value)) {
-                                alert(config.message.invalid);
-                                return;
-                            }
-
-                            if (operatorPattern.test(value)) {
-                                alert(config.message.invalid);
-                                return;
-                            }
                             if (value.startsWith('+') || value.startsWith('-') || value.startsWith('*') || value.startsWith('/') || value.startsWith('%')) {
                                 alert(config.message.invalid);
                                 return;
-                            }
-
-                            if (config.Regex.alphabet.test(value)) {
-                                return;
-                            }
-
-                            if (value.includes('%')) {
-                                value.replace(config.Regex.percentVal, `*(${state.data}/100)`);
                             }
 
                             if (value === "" || config.Regex.dataStr.test(value) || config.Regex.checkDataStr.test(value)) {
@@ -305,111 +307,40 @@ const ReusableCalculator = () => {
                     />
                 </Box>
                 <Box>
-                    <Stack direction='row' spacing={2} justifyContent={'center'} mb={1}>
-                        <ReusableCalculatorButtons
-                            onClick={Toggle}
-                            backgroundColor={operatorButtonColor}
-                            textColor={textColor}
-                            icon={state.mode === 'dark' ? <DarkModeIcon /> : <WbSunnyIcon />}
-                            isIconButton
-                        />
-                        <ReusableCalculatorButtons
-                            onClick={handlePercentage}
-                            value="%"
-                            backgroundColor={operatorButtonColor}
-                            textColor={textColor}
-                        />
-                        <ReusableCalculatorButtons
-                            onClick={Delete}
-                            icon={<BackspaceOutlinedIcon />}
-                            value="clr"
-                            backgroundColor={operatorButtonColor}
-                            textColor={textColor}
-                        />
-                        <ReusableCalculatorButtons
-                            onClick={() => setState(astate => ({ ...astate, data: '', lastResult: null }))}
-                            value="AC"
-                            backgroundColor={operatorButtonColor}
-                            textColor={textColor}
-                        />
-                    </Stack>
-                    <Stack direction='row' spacing={2} justifyContent={'center'} mb={1}>
-                        {['7', '8', '9'].map(num => (
-                            <ReusableCalculatorButtons
-                                key={num}
-                                onClick={() => Val(num)}
-                                value={num}
-                                backgroundColor={buttonColor}
-                                textColor={textColor}
-                            />
+                    <Box>
+                        {CalculatorField.map((row, rowIndex) => (
+                            <Stack
+                                direction="row"
+                                spacing={2}
+                                justifyContent="center"
+                                mb={rowIndex === CalculatorField.length - 1 ? 2 : 1}
+                                key={rowIndex}
+                            >
+                                {row.map((button, buttonIndex) => (
+                                    <ReusableCalculatorButtons
+                                        key={buttonIndex}
+                                        value={button.value}
+                                        icon={ button.value === "toggle" ? (state.mode === 'dark' ? <WbSunnyIcon /> : <DarkModeIcon />): null }
+                                        onClick={() => handleButtonClick(button.value)}
+                                        backgroundColor={
+                                            button.value === "toggle" ? operatorButtonColor : buttonColor && 
+                                            (
+                                                button.value ==="%" || 
+                                                button.value ==="clr" || 
+                                                button.value ==="AC" || 
+                                                button.value ==="-" || 
+                                                button.value ==="+" || 
+                                                button.value ==="*" || 
+                                                button.value ==="/" || 
+                                                button.value ==="="
+                                            ) ? operatorButtonColor:buttonColor}
+                                        textColor={textColor}
+                                        isIconButton={button.isIconButton}
+                                    />
+                                ))}
+                            </Stack>
                         ))}
-                        <ReusableCalculatorButtons
-                            onClick={() => Val('*')}
-                            value="X"
-                            backgroundColor={operatorButtonColor}
-                            textColor={textColor}
-                        />
-                    </Stack>
-                    <Stack direction='row' spacing={2} justifyContent={'center'} mb={1}>
-                        {['4', '5', '6'].map(num => (
-                            <ReusableCalculatorButtons
-                                key={num}
-                                onClick={() => Val(num)}
-                                value={num}
-                                backgroundColor={buttonColor}
-                                textColor={textColor}
-                            />
-                        ))}
-                        <ReusableCalculatorButtons
-                            onClick={() => Val('-')}
-                            value="-"
-                            backgroundColor={operatorButtonColor}
-                            textColor={textColor}
-                        />
-                    </Stack>
-                    <Stack direction='row' spacing={2} justifyContent={'center'} mb={1}>
-                        {['1', '2', '3'].map(num => (
-                            <ReusableCalculatorButtons
-                                key={num}
-                                onClick={() => Val(num)}
-                                value={num}
-                                backgroundColor={buttonColor}
-                                textColor={textColor}
-                            />
-                        ))}
-                        <ReusableCalculatorButtons
-                            onClick={() => Val('+')}
-                            value="+"
-                            backgroundColor={operatorButtonColor}
-                            textColor={textColor}
-                        />
-                    </Stack>
-                    <Stack direction='row' spacing={2} justifyContent={'center'} mb={2}>
-                        <ReusableCalculatorButtons
-                            value="0"
-                            onClick={() => Val('0')}
-                            backgroundColor={buttonColor}
-                            textColor={textColor}
-                        />
-                        <ReusableCalculatorButtons
-                            value="."
-                            onClick={() => Val('.')}
-                            backgroundColor={buttonColor}
-                            textColor={textColor}
-                        />
-                        <ReusableCalculatorButtons
-                            value="="
-                            onClick={result}
-                            backgroundColor={operatorButtonColor}
-                            textColor={textColor}
-                        />
-                        <ReusableCalculatorButtons
-                            value="/"
-                            onClick={() => Val('/')}
-                            backgroundColor={operatorButtonColor}
-                            textColor={textColor}
-                        />
-                    </Stack>
+                    </Box>
                 </Box>
             </Box>
         </>

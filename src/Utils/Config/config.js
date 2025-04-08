@@ -56,6 +56,7 @@ export const config = {
         expression2:/([+-])0\.-/g,
         noZero:/\/\s*0(\.0*)?$/,
         valRegex:/^0+(?=[1-9])/,
+        valRegex1:/(?<=[+\-*/])(0+)(?=[1-9][0-9]*)/,
         removeOperator: /[*+/-]$/,
         operatorCheck:/[+\-*/]/,
         operatorMatch:/[+\-*/]/g,

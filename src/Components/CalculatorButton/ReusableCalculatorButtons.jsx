@@ -13,7 +13,7 @@ const ReusableCalculatorButtons = ({
     return (
         <Button
             variant="contained"
-            onClick={onClick} // ← Let the parent decide how to handle value
+            onClick={onClick} //handling this depend upon parent component
             sx={{
                 backgroundColor,
                 color: textColor,
