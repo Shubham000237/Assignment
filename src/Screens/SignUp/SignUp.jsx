@@ -1,19 +1,20 @@
 import React, { useState } from 'react';
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
-import { Helper } from '../../Utils/Helpers/Helper';
-import TextFieldComponent from '../../Components/TextFieldComponent/TextFieldComponent';
-import { FormFields } from '../../Utils/Helpers/ObjectList/FormFields';
-import PasswordField from "../../Utils/Helpers/PasswordComponent/PasswordField";
-import { config } from "../../Utils/Config/config";
-import localStorageHelper from '../../Components/LocalStorageHelper/LocalStorageHelper'
+import { ErrorValidations } from '../../Helpers';
+import CustomTextField from '../../Components/TextField/CustomTextField';
+import PasswordInputField from "../../Components/Password/PasswordInputField";
+import { config, FormFieldsData } from "../../Utils";
+import localStorageHelper from '../../Helpers/LocalStorageHelper/LocalStorageHelper';
+import CustomButton from '../../Components/Button/CustomButton';
 import './SignUpStyle.css'
 
 const SignUp = () => {
     const navigate = useNavigate();
-    const [data, setData] = useState(() => {
-        const initialState = FormFields.reduce((e, field) => {
+    
+    const [inputData, setInputData] = useState(() => {
+        const initialState = FormFieldsData.reduce((e, field) => {
             e[field.name] = "";
             return e;
         }, {});
@@ -26,9 +27,9 @@ const SignUp = () => {
     // Handle input change and validation
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setData((prev) => {
+        setInputData((prev) => {
             const updatedState = { ...prev, [name]: value };
-            const fieldErrors = Helper.checkForm(updatedState);
+            const fieldErrors = ErrorValidations.checkForm(updatedState);
 
             return {
                 ...updatedState,
@@ -40,14 +41,14 @@ const SignUp = () => {
     //handleSubmit function
     const handleSubmit = (e) => {
         let existingUsers = localStorageHelper.getItem("users") || [];
-        const formErrors = Helper.checkForm(data);
+        const formErrors = ErrorValidations.checkForm(inputData);
         const userExists = existingUsers.some(
-            (user) => user.email.trim().toLowerCase() === data.email.trim().toLowerCase()
+            (user) => user.email.trim().toLowerCase() === inputData.email.trim().toLowerCase()
         );
         
         const newUser = {
-            ...data,
-            email: data.email.trim().toLowerCase(),
+            ...inputData,
+            email: inputData.email.trim().toLowerCase(),
             loggedInUser: true,
         };
 
@@ -71,7 +72,7 @@ const SignUp = () => {
     };
 
     const isValid = () => {
-        const formErrors = Helper.checkForm(data);
+        const formErrors = ErrorValidations.checkForm(inputData);
         return !Object.values(formErrors).some((error) => error !== '');
     }
 
@@ -82,27 +83,27 @@ const SignUp = () => {
                     Registration Form
                 </Typography>
                 <Box alignItems="center">
-                    {FormFields.map((field) => (
+                    {FormFieldsData.map((field) => (
                         <Box key={field.name} mb={2}>
                             {field.name === "password" || field.name === "confirmpassword" ? (
-                                <PasswordField
+                                <PasswordInputField
                                     label={field.label}
                                     name={field.name}
-                                    value={data[field.name] || ""}
+                                    value={inputData[field.name] || ""}
                                     onChange={handleChange}
-                                    error={!!data.errors[field.name]}
-                                    helperText={data.errors[field.name] || " "}
+                                    error={!!inputData.errors[field.name]}
+                                    helperText={inputData.errors[field.name] || " "}
                                 />
                             ) : (
-                                <TextFieldComponent
+                                <CustomTextField
                                     label={field.label}
                                     type={field.type}
                                     variant={field.variant}
                                     name={field.name}
-                                    value={data[field.name] || ""}
+                                    value={inputData[field.name] || ""}
                                     onChange={handleChange}
-                                    error={!!data.errors[field.name]}
-                                    helperText={data.errors[field.name]}
+                                    error={!!inputData.errors[field.name]}
+                                    helperText={inputData.errors[field.name]}
                                     multiline={field.multiline || false}
                                     rows={field.rows || 1}
                                     inputProps={field.name === "mobile" ? { maxLength: 10, pattern: "^[0-9]{10}$" } : {}}
@@ -110,9 +111,9 @@ const SignUp = () => {
                             )}
                         </Box>
                     ))}
-                    <Button variant="contained" onClick={handleSubmit} disabled={!isValid()} className="submitButton" sx={{textTransform:'none'}}>
+                    <CustomButton variant="contained" onClick={handleSubmit} disabled={!isValid()} className="submitButton" sx={{textTransform:'none'}}>
                         Submit
-                    </Button>
+                    </CustomButton>
                     <Typography variant="body2" align="center" className="text" mt={1}>
                         {config.message.haveAccount},{' '}
                         <strong style={{ color: 'darkgreen', cursor: 'pointer', textDecoration:'none' }} onClick={() => navigate('/login')}>

@@ -1,1 +1,2 @@
-export {default as config} from '../Utils/Config/config';
+export { config } from '../Utils/Config';
+export { CardData, StopWatchLabels, FormFieldsData, LoginFieldsData, ToDoFieldsData, CalculatorData } from './ObjectList';

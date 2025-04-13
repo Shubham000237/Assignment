@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import QRCode from 'react-qr-code';
 
-import { Header } from '../../Components';
-import { Box, TextField, Button } from '@mui/material';
+import { Header, CustomButton } from '../../Components';
+import { Box, TextField } from '@mui/material';
 
 const QRCodeGenerator = () => {
     const navigate = useNavigate();
@@ -39,13 +39,13 @@ const QRCodeGenerator = () => {
                             sx={{ width: '300px', mb: 2 }}
                         />
                         <br />
-                        <Button
+                        <CustomButton
                             type="submit"
                             variant="contained"
                             sx={{ width: '130px', mb: 2, ml: 2, whiteSpace: 'nowrap', textTransform: 'none' }}
                         >
                             Generate QR Code
-                        </Button>
+                        </CustomButton>
                     </form>
 
                     {show && url && (

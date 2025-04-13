@@ -1,24 +1,14 @@
 import React, { useState, useEffect } from "react";
-import {
-    Box,
-    Button,
-    Typography,
-    Divider,
-    FormControlLabel,
-    Checkbox,
-    Pagination,
-    Stack
-} from "@mui/material";
+import { Box, Typography, Divider, FormControlLabel, Checkbox, Stack } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 
-import { config } from "../../Utils/Config/config";
-import TextFieldComponent from "../../Components/TextFieldComponent/TextFieldComponent";
-import Toggle from "../../Utils/Helpers/TodoToggleStatusCompoenent/Toggle";
-import { ToDoField } from "../../Utils/Helpers/ObjectList/ToDoField";
-import localStorageHelper from "../../Components/LocalStorageHelper/LocalStorageHelper";
+import { config, ToDoFieldsData } from "../../Utils";
+import TextFieldComponent from "../../Components/TextField/CustomTextField";
+import Toggle from "../../Components/TodoToggle/Toggle";
+import localStorageHelper from '../../Helpers/LocalStorageHelper/LocalStorageHelper';
 import { ThemeProvider } from "@mui/material/styles";
 import theme from './TodoStyle'
+import { Header, CustomButton, CustomPagination } from "../../Components";
 
 const Todo = () => {
     const navigate = useNavigate();
@@ -34,9 +24,11 @@ const Todo = () => {
     const [filters, setFilters] = useState({ status: "all", page: 1 });
     const [taskInput, setTaskInput] = useState({ text: "", id: null });
     const tasksPerPage = 5;
+    
     const filteredTasks = tasks.filter((task) =>
         filters.status === "all" ? true : filters.status === "completed" ? task.completed : !task.completed
     );
+
     const totalPages = Math.ceil(filteredTasks.length / tasksPerPage);
     const firstIndex = (filters.page - 1) * tasksPerPage;
     const lastIndex = filters.page * tasksPerPage;
@@ -104,6 +96,7 @@ const Todo = () => {
             const updatedTasks = oldTasks.filter((task) =>
                 filters.status === "all" ? true : filters.status === "completed" ? task.completed : !task.completed
             );
+
             const updatedTotalPages = Math.ceil(updatedTasks.length / tasksPerPage);
             // Adjust the current page if it exceeds the total pages after deletion
             if (filters.page > updatedTotalPages && updatedTotalPages > 0) {
@@ -122,12 +115,9 @@ const Todo = () => {
         <ThemeProvider theme={theme}>
             <>
                 {/* Header */}
-                <Box sx={{ p: "1vh", backgroundColor: "#074b88", boxSizing: "border-box" }}>
-                    <Button onClick={() => navigate("/home")} sx={{ color: "white", textTransform: "none", fontSize: "1.8vh" }}>
-                        <ArrowBackIosIcon sx={{ fontSize: "1.5vh" }} /> Back
-                    </Button>
+                <Box>
+                    <Header navigate={navigate} />
                 </Box>
-
                 {/* Main Container */}
                 <Box display={"flex"} justifyContent={"center"} p={"2vh"} className="MuiBox-toDoLayout">
                     <Box
@@ -136,9 +126,8 @@ const Todo = () => {
                         <Typography variant="h6" sx={{ textAlign: "center", fontSize: { xs: "2vh", md: "2.5vh" }, mb: "2vh" }}>
                             To-Do List
                         </Typography>
-
                         {/* Task Input */}
-                        {ToDoField.map((item) => (
+                        {ToDoFieldsData.map((item) => (
                             <TextFieldComponent
                                 key={item.label}
                                 fullWidth={item.fullWidth}
@@ -166,7 +155,6 @@ const Todo = () => {
                                 setFilters({ status, page: newPage });
                             }}
                         />
-
                         {/* Tasks List */}
                         <Box>
                             {paginatedTasks.length > 0 ? (
@@ -190,17 +178,17 @@ const Todo = () => {
                                             {task.text}
                                         </Typography>
                                         <Box sx={{ display: "flex", gap: "1vw" }}>
-                                            <Button
+                                            <CustomButton
                                                 onClick={() => editTask(task)}
                                                 sx={{ textTransform: "none", fontSize: { xs: "1.7vh", md: "1.8vh" } }}
                                             >Edit
-                                            </Button>
-                                            <Button
+                                            </CustomButton>
+                                            <CustomButton
                                                 onClick={() => deleteTask(task.id)}
                                                 color="error"
                                                 sx={{ textTransform: "none", fontSize: { xs: "1.7vh", md: "1.8vh" } }}
                                             >Delete
-                                            </Button>
+                                            </CustomButton>
                                         </Box>
                                     </Box>
                                 ))
@@ -213,7 +201,7 @@ const Todo = () => {
                         {/* Pagination */}
                         {filteredTasks.length > tasksPerPage && (
                             <Stack spacing={2} sx={{ alignItems: "center", mt: "3vh" }}>
-                                <Pagination
+                                <CustomPagination
                                     count={totalPages}
                                     page={filters.page}
                                     onChange={(_, page) => setFilters({ ...filters, page })}

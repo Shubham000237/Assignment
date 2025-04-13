@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, Button, Typography, Card, CardActionArea, CardMedia, CardContent } from "@mui/material";
+import { Box, Typography, Card, CardActionArea, CardMedia, CardContent } from "@mui/material";
 
-import localStorageHelper from '../../Components/LocalStorageHelper/LocalStorageHelper'
-import { CardField } from "../../Utils/Helpers/ObjectList/CardField"
+import localStorageHelper from '../../Helpers/LocalStorageHelper/LocalStorageHelper';
 import './DashboardStyle.css'
-import { config } from "../../Utils/Config/config";
+import { config, CardData } from "../../Utils";
+import {CustomButton} from '../../Components'
 
 const Dashboard = () => {
     const navigate = useNavigate();
@@ -68,18 +68,18 @@ const Dashboard = () => {
                 <Typography className="title">
                     {config.message.welcome}, {user?.name || 'Guest'}
                 </Typography>
-                <Button
+                <CustomButton
                     variant="outlined"
                     className="logoutButton"
                     sx={{ textTransform: 'none', color: 'white' }}
                     onClick={() => handleLogout(navigate)}
                 >
                     Log Out
-                </Button>
+                </CustomButton>
             </Box>
             {/* To-Do Section */}
             <Box display="flex" flexWrap="wrap" gap={5} justifyContent="center">
-                {CardField.map((e, index) => (
+                {CardData.map((e, index) => (
                     <Card key={index} sx={{ maxWidth: 170 }}>
                         <CardActionArea component={e.component} href={e.href} target={e.target} rel={e.rel}>
                             <CardMedia
@@ -91,7 +91,7 @@ const Dashboard = () => {
                             />
                             <CardContent>
                                 <Typography gutterBottom variant="h5" component="div">
-                                    <Button size="small" sx={{ marginLeft: 3, textTransform: 'none' }}
+                                    <CustomButton size="small" sx={{ marginLeft: 3, textTransform: 'none' }}
                                         onClick={() => { if (e.action) { e.action(navigate) } }}
                                     >
                                         {e.image && e.image.includes("to-do") && "To-Do"}
@@ -99,7 +99,7 @@ const Dashboard = () => {
                                         {e.image && e.image.includes("stopwatch") && "Stopwatch"}
                                         {e.image && e.image.includes("calculator") && "Calculator"}
                                         {e.image && e.image.includes("kbg") && "QR Code"}
-                                    </Button>
+                                    </CustomButton>
                                 </Typography>
                             </CardContent>
                         </CardActionArea>

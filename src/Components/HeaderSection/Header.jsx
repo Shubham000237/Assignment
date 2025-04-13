@@ -1,13 +1,15 @@
 import React from "react";
-import { Box, Button } from "@mui/material";
+import { Box } from "@mui/material";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
+import CustomButton from "../Button/CustomButton";
 
-export const Header = ({navigate}) => {
+const Header = ({navigate}) => {
     return (
         <Box sx={{ p: "1vh", backgroundColor: "#074b88", boxSizing: "border-box" }}>
-            <Button onClick={() => navigate("/home")} sx={{ color: "white", textTransform: "none", fontSize: "1.8vh" }}>
+            <CustomButton onClick={() => navigate("/home")} sx={{ color: "white", textTransform: "none", fontSize: "1.8vh" }}>
                 <ArrowBackIosIcon sx={{ fontSize: "1.5vh" }} /> Back
-            </Button>
+            </CustomButton>
         </Box>
     )
 }
+export default Header;

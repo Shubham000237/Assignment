@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-import { Box, TextField, Button, Typography, InputAdornment, IconButton } from '@mui/material';
+import { Box, TextField, Typography, InputAdornment, IconButton } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 
-import { Helper } from '../../Utils/Helpers/Helper';
-import { config } from '../../Utils/Config/config';
-import { LoginField } from '../../Utils/Helpers/ObjectList/LoginField';
-import localStorageHelper from '../../Components/LocalStorageHelper/LocalStorageHelper';
+import { ErrorValidations } from '../../Helpers';
+import { config, LoginFieldsData } from '../../Utils';
+import localStorageHelper from '../../Helpers/LocalStorageHelper/LocalStorageHelper';
 import './LoginStyle.css'
-import { TextFieldComponent } from '../../Components';
+import CustomTextField from '../../Components/TextField/CustomTextField';
+import CustomButton from '../../Components/Button/CustomButton';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -56,7 +56,7 @@ const Login = () => {
     const registeredUsers = getRegisteredUsers();
     let existingUsers = localStorageHelper.getItem("users") || [];
     const user = registeredUsers.find(user => user.email?.trim().toLowerCase() === credentials.email?.trim().toLowerCase());
-    const formErrors = Helper.checkForm(credentials, true);
+    const formErrors = ErrorValidations.checkForm(credentials, true);
     
     let userIndex = existingUsers.findIndex(
       (user) =>
@@ -122,7 +122,7 @@ const Login = () => {
         <Typography variant="h5" align="center" gutterBottom className="loginText">
           Login
         </Typography>
-        {LoginField.map((field) => (
+        {LoginFieldsData.map((field) => (
           <Box key={field.name} sx={{ mb: 2 }}>
             {field.name === 'password' ? (
               <TextField
@@ -151,7 +151,7 @@ const Login = () => {
                 }}
               />
             ) : (
-              <TextFieldComponent
+              <CustomTextField
                 label={field.label}
                 fullWidth={field.fullWidth}
                 type={field.type}
@@ -167,7 +167,7 @@ const Login = () => {
             )}
           </Box>
         ))}
-        <Button
+        <CustomButton
           onClick={(e)=>handleLogin(e)}
           variant="contained"
           fullWidth
@@ -176,7 +176,7 @@ const Login = () => {
           disabled={isDisabled}
         >
           Login
-        </Button>
+        </CustomButton>
         <Typography
           variant="body2"
           align="center"

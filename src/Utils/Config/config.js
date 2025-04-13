@@ -61,7 +61,7 @@ export const config = {
         operatorCheck:/[+\-*/]/,
         operatorMatch:/[+\-*/]/g,
         dataStr:/[+\-*/]$/,
-        checkDataStr:/\(\s*1\/100\s*\)$/,
+        checkDataStr:/\s*1\/100\s*$/,
         percentVal:/%/g,
     },
 }
