@@ -1,16 +1,16 @@
 export const StopWatchLabels = [
   {
-    label: "Hour",
+    label: "hr",
     key: "hours",
 
   },
   {
-    label: "Minutes",
+    label: "min",
     key: "minutes",
 
   },
   {
-    label: "Seconds",
+    label: "sec",
     key: "seconds",
   }
 ];

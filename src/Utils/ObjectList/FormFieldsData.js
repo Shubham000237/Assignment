@@ -41,7 +41,6 @@ export const FormFieldsData = [
       name: "address",
       type: "text",
       multiline: true,
-      rows: 4,
       variant: 'outlined',
     }
   ];

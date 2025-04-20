@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
-import { Box, TextField, Typography, InputAdornment, IconButton } from '@mui/material';
+import { Box, Typography, InputAdornment, IconButton } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 
-import { ErrorValidations } from '../../Helpers';
+import { checkForm, localStorageHelper } from '../../Helpers';
 import { config, LoginFieldsData } from '../../Utils';
-import localStorageHelper from '../../Helpers/LocalStorageHelper/LocalStorageHelper';
+import { CustomTextField, CustomButton } from '../../Components';
 import './LoginStyle.css'
-import CustomTextField from '../../Components/TextField/CustomTextField';
-import CustomButton from '../../Components/Button/CustomButton';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -16,7 +14,7 @@ const Login = () => {
     email: '',
     password: '',
     showPassword: false,
-    error: ''
+    error: '',
   });
   const getRegisteredUsers = () => {
     return localStorageHelper.getItem("users", []);
@@ -24,15 +22,16 @@ const Login = () => {
   //Error validation work according to the saved credentials in localStorage
   const handleChange = (e) => {
     const { name, value } = e.target;
-    const registeredUsers = getRegisteredUsers();
     let emailError = '';
     let passwordError = '';
+    
     if (name === "email") {
-      const userExists = registeredUsers.some(user => user.email?.trim().toLowerCase() === value.trim().toLowerCase());
+      const userExists = getRegisteredUsers().some(user => user.email?.trim().toLowerCase() === value.trim().toLowerCase());
       emailError = userExists ? '' : config.message.loginEmail;
     }
+
     if (name === "password" && credentials.email) {
-      const user = registeredUsers.find(user => user.email?.trim().toLowerCase() === credentials.email?.trim().toLowerCase());
+      const user = getRegisteredUsers().find(user => user.email?.trim().toLowerCase() === credentials.email?.trim().toLowerCase());
       if (user && user.password !== value) {
         passwordError = config.message.loginPassword;
       }
@@ -44,8 +43,8 @@ const Login = () => {
       passwordError
     }));
   };
-  //Toggle the eye icon
   
+  //Toggle the eye icon
   const handleClickShowPassword = () => {
     setCredentials((prev) => ({ ...prev, showPassword: !prev.showPassword }));
   };
@@ -56,20 +55,20 @@ const Login = () => {
     const registeredUsers = getRegisteredUsers();
     let existingUsers = localStorageHelper.getItem("users") || [];
     const user = registeredUsers.find(user => user.email?.trim().toLowerCase() === credentials.email?.trim().toLowerCase());
-    const formErrors = ErrorValidations.checkForm(credentials, true);
-    
+    const formErrors = checkForm(credentials, true);
+
     let userIndex = existingUsers.findIndex(
       (user) =>
         user.email?.trim().toLowerCase() === credentials.email.trim().toLowerCase() &&
         user.password?.trim() === credentials.password.trim()
     );
-    
+
     const loggedInUser = {
       name: user?.name,
       email: user?.email,
       userIndex: userIndex,
     };
-    
+
     if (!user) {
       setCredentials((prev) => ({
         ...prev,
@@ -78,21 +77,21 @@ const Login = () => {
       }));
       return;
     }
-    
+
     if (user.password !== credentials.password) {
       setCredentials((prev) => ({
         ...prev,
         emailError: '',
         passwordError: config.message.loginPassword
       }));
-    
+
       return;
     }
 
     if (formErrors.email || formErrors.password) {
       return;
     }
-    
+
     if (userIndex === -1) {
       return;
     }
@@ -109,8 +108,8 @@ const Login = () => {
   const isDisabled =
     !credentials.email?.trim() ||
     // !credentials.password?.trim() ||
-    credentials.emailError 
-    // || credentials.passwordError;
+    credentials?.emailError
+  // || credentials.passwordError;
 
   return (
     <Box
@@ -125,11 +124,11 @@ const Login = () => {
         {LoginFieldsData.map((field) => (
           <Box key={field.name} sx={{ mb: 2 }}>
             {field.name === 'password' ? (
-              <TextField
+              <CustomTextField
                 label={field.label}
                 fullWidth
                 type={credentials.showPassword ? 'text' : 'password'}
-                variant="outlined"
+                variant={field.variant}
                 name={field.name}
                 value={credentials.password}
                 onChange={handleChange}
@@ -168,11 +167,11 @@ const Login = () => {
           </Box>
         ))}
         <CustomButton
-          onClick={(e)=>handleLogin(e)}
+          onClick={(e) => handleLogin(e)}
           variant="contained"
           fullWidth
           className="loginButtonDesign"
-          sx={{textTransform:'none'}}
+          sx={{ textTransform: 'none' }}
           disabled={isDisabled}
         >
           Login
@@ -185,7 +184,7 @@ const Login = () => {
         >
           <small>
             {config.message.noAccount},{' '}
-            <strong  onClick={() => navigate('/')} style={{ color: 'darkgreen', cursor: 'pointer', textDecoration:'none' }}>{config.message.newAccount}</strong>
+            <strong onClick={() => navigate('/')} style={{ color: 'darkgreen', cursor: 'pointer', textDecoration: 'none', fontSize:'clamp(8px 4vw 14px)' }}>{config.message.newAccount}</strong>
           </small>
         </Typography>
       </Box>

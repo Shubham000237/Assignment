@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Typography, Stack } from "@mui/material";
-
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import PauseIcon from '@mui/icons-material/Pause';
 import RestoreIcon from '@mui/icons-material/Restore';
+
 import { Header } from '../../Components';
 import { StopWatchLabels } from '../../Utils';
 import './StopWatchStyle.css';
-
 
 export const StopWatch = () => {
     const navigate = useNavigate();
@@ -19,6 +18,9 @@ export const StopWatch = () => {
     const hours = Math.floor(time / 3600)
     const minutes = Math.floor((time % 3600) / 60)
     const seconds = Math.floor(time % 60)
+    const timeVal = { hours, minutes, seconds };
+
+    const togglePlayPause = () => setStatus((prevStatus) => !prevStatus);
 
     useEffect(() => {
         if (status===true) {
@@ -27,10 +29,8 @@ export const StopWatch = () => {
             }, 1000);
         }
         return () => clearInterval(interval);
-    }, [status, time]);
+    }, [status, time]); 
 
-    const timeVal = { hours, minutes, seconds };
-    const togglePlayPause = () => setStatus((prevStatus) => !prevStatus);
     return (
         <>
             <Box>
@@ -38,14 +38,14 @@ export const StopWatch = () => {
             </Box>
             <Box className="stopwatch-heading"><h2>Stop-Watch</h2></Box>
             <Box className="container">
-                {StopWatchLabels.map((e, index) => {
-                    const a = timeformat(timeVal[e.key])
-                    const b = index < 2 ? ":" : ""
+                {StopWatchLabels.map((element, index) => {
+                    const timeFormatLabels = timeformat(timeVal[element.key])
+                    const i = index < 2 ? ":" : ""
                     return (
-                        <Box key={index}>
-                            <Typography ml={8} className="label">{e.label}</Typography>
+                        <Box key={index} className="labels">
+                            <Typography sx={{fontSize:'clamp(14px, 2vw, 40px)', ml:{xs:2, sm:4, md:4.5, lg:7}}}>{element.label}</Typography>
                             <br />
-                            <span className="digits">{a}{b}</span>
+                            <span className="digits">{timeFormatLabels}{i}</span>
                         </Box>
                     )
                 })}
@@ -54,8 +54,7 @@ export const StopWatch = () => {
                 <Box onClick={togglePlayPause}>
                     {status ? (<PauseIcon style={{ fontSize: "clamp(30px, 8vw, 57px)", minWidth: '40px', color: 'black', cursor: 'pointer' }}/>)
                     : 
-                    (<PlayArrowIcon style={{ fontSize: "clamp(30px, 8vw, 57px)", minWidth: '40px', color: 'black', cursor: 'pointer' }}/>)}
-                    
+                    (<PlayArrowIcon style={{ fontSize: "clamp(30px, 8vw, 57px)", minWidth: '40px', color: 'black', cursor: 'pointer' }}/>)}               
                 </Box>
                 <Typography onClick={() => { setStatus(false); setTime(0); }}>
                     <RestoreIcon style={{ fontSize: "clamp(30px, 8vw, 57px)", minWidth: '40px', color: 'black', cursor: 'pointer' }} />

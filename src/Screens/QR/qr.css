@@ -1,0 +1,8 @@
+.QR{
+    width: 98vw;
+    height: 92vh;
+    background-image: url('../../assets/R.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}

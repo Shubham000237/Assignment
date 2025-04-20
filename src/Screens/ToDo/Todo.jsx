@@ -3,12 +3,10 @@ import { Box, Typography, Divider, FormControlLabel, Checkbox, Stack } from "@mu
 import { useNavigate } from "react-router-dom";
 
 import { config, ToDoFieldsData } from "../../Utils";
-import TextFieldComponent from "../../Components/TextField/CustomTextField";
-import Toggle from "../../Components/TodoToggle/Toggle";
-import localStorageHelper from '../../Helpers/LocalStorageHelper/LocalStorageHelper';
 import { ThemeProvider } from "@mui/material/styles";
 import theme from './TodoStyle'
-import { Header, CustomButton, CustomPagination } from "../../Components";
+import { Header, CustomButton, CustomTextField } from "../../Components";
+import {CustomPagination, Toggle, localStorageHelper} from "../../Helpers"
 
 const Todo = () => {
     const navigate = useNavigate();
@@ -24,7 +22,7 @@ const Todo = () => {
     const [filters, setFilters] = useState({ status: "all", page: 1 });
     const [taskInput, setTaskInput] = useState({ text: "", id: null });
     const tasksPerPage = 5;
-    
+
     const filteredTasks = tasks.filter((task) =>
         filters.status === "all" ? true : filters.status === "completed" ? task.completed : !task.completed
     );
@@ -44,21 +42,15 @@ const Todo = () => {
     const handleInputChange = (event) => { setTaskInput({ ...taskInput, text: event.target.value }) };
     const handleKeyDown = (e) => {
         const trimmedText = taskInput.text.trim();
-
         if (e.key !== "Enter") return;
-
         if (!config.Regex.taskRegex.test(trimmedText)) return;
-
         const isDuplicate = tasks.some(task =>
             task.text.trim().toLowerCase() === trimmedText.toLowerCase() && task.id !== taskInput.id
         );
-
         if (isDuplicate) {
             alert(config.message.taskExist);
-
             return;
         }
-
         if (taskInput.id) {
             setTasks((prevTasks) =>
                 prevTasks.map((task) =>
@@ -96,13 +88,11 @@ const Todo = () => {
             const updatedTasks = oldTasks.filter((task) =>
                 filters.status === "all" ? true : filters.status === "completed" ? task.completed : !task.completed
             );
-
             const updatedTotalPages = Math.ceil(updatedTasks.length / tasksPerPage);
             // Adjust the current page if it exceeds the total pages after deletion
             if (filters.page > updatedTotalPages && updatedTotalPages > 0) {
                 setFilters((prev) => ({ ...prev, page: updatedTotalPages }));
             }
-
             return oldTasks;
         });
 
@@ -127,22 +117,25 @@ const Todo = () => {
                             To-Do List
                         </Typography>
                         {/* Task Input */}
-                        {ToDoFieldsData.map((item) => (
-                            <TextFieldComponent
-                                key={item.label}
-                                fullWidth={item.fullWidth}
-                                label={item.label}
-                                variant={item.variant}
-                                value={taskInput.text}
-                                onChange={handleInputChange}
-                                onKeyDown={handleKeyDown}
-                                error={taskInput.text?.trim().length > 0 && taskInput.text.trim().length <= 2}
-                                helperText={
-                                    taskInput.text?.trim().length > 0 && taskInput.text.trim().length <= 2 ? config.message.textTask
-                                        : ""}
-                                sx={theme.customComponents.textFieldLayout}
-                            />
-                        ))}
+                        <Box display={'flex'} justifyContent={'center'}>
+                            {ToDoFieldsData.map((item) => (
+                                <CustomTextField
+                                    key={item}
+                                    fullWidth={item.fullWidth}
+                                    placeholder={item.placeholder}
+                                    variant={item.variant}
+                                    value={taskInput.text}
+                                    onChange={handleInputChange}
+                                    onKeyDown={handleKeyDown}
+                                    error={taskInput.text?.trim().length > 0 && taskInput.text.trim().length <= 2}
+                                    helperText={
+                                        taskInput.text?.trim().length > 0 && taskInput.text.trim().length <= 2 ? config.message.textTask
+                                            : ""}
+                                    sx={theme.customComponents.textFieldLayout}
+                                />
+                            ))}
+                        </Box>
+
                         <Divider sx={{ p: "1vh", mb: "2vh" }} />
                         <Toggle
                             status={filters.status}

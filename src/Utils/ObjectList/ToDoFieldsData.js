@@ -1,7 +1,7 @@
 export const ToDoFieldsData = [
     {
         fullWidth: true,
-        label: "Enter a task",
+        placeholder: "Enter a task",
         variant: "outlined"
     }
 ]

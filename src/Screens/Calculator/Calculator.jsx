@@ -4,13 +4,15 @@ import { Box, Stack } from '@mui/material';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import WbSunnyIcon from '@mui/icons-material/WbSunny';
 
-import { MyButton, Header, CustomTextField } from '../../Components'
-import { config, CalculatorData } from '../../Utils'
-import { textFieldsData } from '../../Utils/ObjectList/textFieldsData'
-import Logics from '../../Helpers/CalculatorUtils/Logics';
+import { Header, CustomTextField, CustomButton } from '../../Components'
+import { config, CalculatorData, textFieldsData } from '../../Utils'
+import { Delete, modeToggle, getCustomColor, handleCursorUpdate, handlePercentage, result } from '../../Helpers';
 
 const Calculator = () => {
     const navigate = useNavigate();
+    
+    const operatorButtons = ["%", "clr", "AC", "-", "+", "*", "/", "="];
+    const startWithOperator = ['+', '-', '*', '/', '%']
 
     const [calculatorState, setCalculatorState] = useState({
         data: "",
@@ -18,36 +20,35 @@ const Calculator = () => {
         mode: 'light',
         cursorPosition: 0,
     });
-    const operatorButtons = ["%", "clr", "AC", "-", "+", "*", "/", "="]
 
     const handleKeyPress = (value) => {
         const actions = {
             "AC": () => setCalculatorState((previousState) => ({ ...previousState, data: "", lastResult: null })),
-            "%": () => Logics.handlePercentage(calculatorState, setCalculatorState),
-            "clr": () => Logics.Delete(calculatorState, setCalculatorState),
-            "=": () => Logics.result(calculatorState, setCalculatorState),
-            "toggle": () => Logics.Toggle(setCalculatorState)
+            "%": () => handlePercentage(calculatorState, setCalculatorState),
+            "clr": () => Delete(calculatorState, setCalculatorState),
+            "=": () => result(calculatorState, setCalculatorState),
+            "toggle": () => modeToggle(setCalculatorState)
         };
         (actions[value] || (() => handleExpressionInput(value)))();
     };
 
-    const { backgroundColor, buttonColor, operatorButtonColor, textColor, borderColor } = Logics.getCustomColor(calculatorState); // created a function and calling the components so that component call krne me aasani hogi
+    const { backgroundColor, buttonColor, operatorButtonColor, textColor, borderColor } = getCustomColor(calculatorState); // created a function and calling the components so that component call krne me aasani hogi
 
     //Logics ko control karega taaki calculator ki functionality sahi call ho sake
     const handleExpressionInput = (value) => {
 
         const { a: operatorPattern, dots: dotsPattern } = config.Regex;
-        const input = calculatorState.data + value
-        const updatedValue = input.replace((config.Regex.valRegex), "");
+        const inputValue = calculatorState.data + value
+        const updatedValue = inputValue.replace((config.Regex.valRegex), "");
         const cleanedValue = updatedValue.replace(config.Regex.valRegex1, "")
         const finalValue = cleanedValue.replace(dotsPattern, ".");
 
         //decimal 0.2 except kare naaki 0.2.2.2
         if (value === '.') {
-            const input = calculatorState.data.toString();
+            const inputValue = calculatorState.data.toString();
 
             // Check if last char is an operator (using dataStr)
-            if (input === '' || config.Regex.dataStr.test(input)) {
+            if (inputValue === '' || config.Regex.dataStr.test(inputValue)) {
                 setCalculatorState(prev => ({
                     ...prev,
                     data: prev.data + '0.',
@@ -57,7 +58,7 @@ const Calculator = () => {
             }
 
             // Split input by operators to get last number part
-            const lastNumber = input.split(config.Regex.b).pop();
+            const lastNumber = inputValue.split(config.Regex.b).pop();
 
             // If last number already contains a dot, block it
             if (lastNumber.includes('.')) return;
@@ -102,6 +103,10 @@ const Calculator = () => {
             alert(config.message.invalid);
             return;
         }
+        if (calculatorState.data === "" && startWithOperator.includes(value)) {
+            alert(config.message.invalid);
+            return;
+        }
 
         setCalculatorState((previousState) => ({
             ...previousState,
@@ -109,19 +114,17 @@ const Calculator = () => {
         }));
     };
 
-    const handleChange = (event) => {
+    //Textfiled k logics handle kr raha hai
+    const handleTextFieldChange = (event) => {
         const triggerValue = event.target.value;
-        // agar operator use hota h bina kisi value k to alert show kare aur return bhi kuch na ho
-        if (triggerValue.startsWith('+') || triggerValue.startsWith('-') || triggerValue.startsWith('*') || triggerValue.startsWith('/') || triggerValue.startsWith('%')) {
+
+        //Agar value empty ho ya value k baad operator laga ho (eg:12+= no return) ya 1/100 mile to return kuch nahi hoga
+        if (triggerValue.trim() === "" || config.Regex.dataStr.test(triggerValue) || config.Regex.checkDataStr.test(triggerValue)) {
             alert(config.message.invalid);
             return;
         }
-        //Agar value empty ho ya value k baad operator laga ho (eg:12+= no return) ya 1/100 mile to return kuch nahi hoga
-        if (triggerValue === "" || config.Regex.dataStr.test(triggerValue) || config.Regex.checkDataStr.test(triggerValue)) {
-            return;
-        }
 
-        Logics.handleCursorUpdate(event, setCalculatorState);
+        handleCursorUpdate(event, setCalculatorState);
     }
 
     return (
@@ -132,20 +135,23 @@ const Calculator = () => {
             <Box width={'100%'} display={'flex'} justifyContent={'center'}>
                 <Box sx={{ backgroundColor: backgroundColor, borderRadius: '8px', border: '2px solid', borderColor: borderColor, width: { xs: '90vw', sm: '50vw', md: '50vw', lg: '25vw' }, mt: 2 }}>
                     <Box width={'100%'} display={'flex'} justifyContent={'center'}>
-                        {calculatorState.mode === 'dark' ? (<h2 style={{ color: '#fff' }}>Calculator</h2>) : (<h2 style={{ color: '#000' }}>Calculator</h2>)}</Box>
-                    <Box width={'100%'} display={'flex'} justifyContent={'center'} mb={1}>
-                        {textFieldsData.map((item) => (
-                            <CustomTextField
-                                label={item.label}
-                                type={item.type}
-                                value={calculatorState.data}
-                                sx={{ marginBottom: 1, backgroundColor: 'white', '& .MuiInputBase-input': { textAlign: 'right', fontSize: 'clamp(20px, 4vw, 23px)' }, borderRadius: '4px' }}
-                                variant={item.variant}
-                                onChange={(event) =>handleChange(event)}
-                                onClick={(event) => Logics.handleCursorUpdate(event, setCalculatorState)}
-                                onKeyUp={(event) => Logics.handleCursorUpdate(event, setCalculatorState)}
-                            />
-                        ))}
+                        {calculatorState.mode === 'dark' ? (<h1 style={{ color: '#fff' }}>Calculator</h1>) : (<h1 style={{ color: '#000' }}>Calculator</h1>)}</Box>
+                    <Box width={'100%'} display={'flex'} justifyContent={'center'} mb={2}>
+                        <Box width={'325px'}>
+                            {textFieldsData.map((item) => (
+                                <CustomTextField
+                                    fullWidth={false}
+                                    label={item.label}
+                                    type={item.type}
+                                    value={calculatorState.data}
+                                    sx={{ marginBottom: 1, backgroundColor: 'white', '& .MuiInputBase-input': { textAlign: 'right', fontSize: 'clamp(20px, 4vw, 23px)' }, borderRadius: '4px' }}
+                                    variant={item.variant}
+                                    onChange={(event) => handleTextFieldChange(event)}
+                                    onClick={(event) => handleCursorUpdate(event, setCalculatorState)}
+                                    onKeyUp={(event) => handleCursorUpdate(event, setCalculatorState)}
+                                />
+                            ))}
+                        </Box>
                     </Box>
                     <Box>
                         <Box>
@@ -153,7 +159,8 @@ const Calculator = () => {
                                 <Stack
                                     direction="row" spacing={{ xs: 0.8, sm: 1, md: 2 }} justifyContent="center" mb={rowIndex === CalculatorData.length - 1 ? 2 : 1} key={rowIndex}>
                                     {row.map((button, buttonIndex) => (
-                                        <MyButton
+                                        <CustomButton
+                                            isCalcButton={true}
                                             key={buttonIndex}
                                             value={button.value}
                                             icon={button.value === "toggle" ? (calculatorState.mode === 'dark' ? <WbSunnyIcon /> : <DarkModeIcon />) : null}

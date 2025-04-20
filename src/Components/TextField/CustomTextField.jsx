@@ -1,43 +1,70 @@
-import React from 'react';
-import { TextField, Box } from '@mui/material';
+import React, { useState } from 'react';
+import { IconButton, InputAdornment, TextField } from '@mui/material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 const CustomTextField = ({
   label,
+  placeholder,
   type,
-  name,
   value,
   onChange,
-  onKeyDown,
+  onClick,
+  onKeyUp,
   variant,
-  fullWidth,
-  required,
-  multiline,
-  rows,
+  sx,
+  name,
   error,
   helperText,
-  slotProps,
-  inputProps
+  margin,
+  className,
+  InputProps,
+  isPasssword,
+  key,
+  onKeyDown,
+  FormHelperTextProps
 }) => {
+
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleTogglePassword = () => {
+    setShowPassword((prev) => !prev);
+  };
+
   return (
-    <Box display="flex" flexDirection="column" mb={2}>
-      <TextField
-        label={label}
-        type={type}
-        name={name}
-        value={value}
-        onChange={onChange}
-        onKeyDown={onKeyDown}
-        variant={variant}
-        fullWidth={fullWidth}
-        required={required}
-        multiline={multiline}
-        rows={rows}
-        error={error}
-        helperText={helperText}
-        slotProps={slotProps}
-        inputProps={inputProps}
-      />
-    </Box>
+    <>
+        <TextField
+          key={key}
+          label={label}
+          placeholder={placeholder}
+          type={isPasssword? (showPassword ? "text" : "password"):(type)}
+          value={value}
+          onChange={onChange}
+          onClick={onClick}
+          onKeyUp={onKeyUp}
+          onKeyDown={onKeyDown}
+          variant={variant}
+          sx={sx}
+          fullWidth={true}
+          name={name}
+          error={error}
+          helperText={helperText}
+          margin={margin}
+          className={className}
+          FormHelperTextProps={FormHelperTextProps}
+          InputProps={{
+            ...InputProps,
+            endAdornment: isPasssword ? (
+              <InputAdornment position="end">
+                <IconButton onClick={handleTogglePassword} edge="end">
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            ) : (
+              InputProps?.endAdornment || null
+            ),
+          }}
+        />
+    </>
   );
 };
 

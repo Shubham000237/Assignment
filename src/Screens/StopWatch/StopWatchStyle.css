@@ -2,19 +2,20 @@
 .container {
     display: flex;
     justify-content: center;
-    gap: 10px;
     margin-bottom: 15px;
 }
 
 
-.label {
-    font-size: clamp(18px, 2.5vw, 40px);
-    font-weight: bold;
+.labels {
+    display: grid;
+    font-size: 40px;
     display: block;
     line-height: normal;
+    margin-left: 1rem;
 }
 
 .digits {
+
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     font-size: clamp(3rem, 10vw, 13rem);
     color: #e42a2a;

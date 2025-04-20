@@ -36,7 +36,7 @@ export const CardData = [
       component: "a",
       height: "140",
       width: "140",
-      image: "https://m.media-amazon.com/images/I/71zkbg+90LL.png",
+      image: "https://as1.ftcdn.net/v2/jpg/05/35/44/18/1000_F_535441889_fJfL8ubUqyN7d2BWEeEWNfT3buzAXcOl.jpg",
       alt: "qr-code",
       action: (navigate) => navigate("/qr")
     },

@@ -2,12 +2,9 @@ import React, { useState } from 'react';
 import { Box, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
-import { ErrorValidations } from '../../Helpers';
-import CustomTextField from '../../Components/TextField/CustomTextField';
-import PasswordInputField from "../../Components/Password/PasswordInputField";
+import { checkForm, localStorageHelper } from '../../Helpers';
+import {CustomTextField, CustomButton } from '../../Components';
 import { config, FormFieldsData } from "../../Utils";
-import localStorageHelper from '../../Helpers/LocalStorageHelper/LocalStorageHelper';
-import CustomButton from '../../Components/Button/CustomButton';
 import './SignUpStyle.css'
 
 const SignUp = () => {
@@ -29,7 +26,7 @@ const SignUp = () => {
         const { name, value } = e.target;
         setInputData((prev) => {
             const updatedState = { ...prev, [name]: value };
-            const fieldErrors = ErrorValidations.checkForm(updatedState);
+            const fieldErrors = checkForm(updatedState);
 
             return {
                 ...updatedState,
@@ -41,7 +38,7 @@ const SignUp = () => {
     //handleSubmit function
     const handleSubmit = (e) => {
         let existingUsers = localStorageHelper.getItem("users") || [];
-        const formErrors = ErrorValidations.checkForm(inputData);
+        const formErrors = checkForm(inputData);
         const userExists = existingUsers.some(
             (user) => user.email.trim().toLowerCase() === inputData.email.trim().toLowerCase()
         );
@@ -72,7 +69,7 @@ const SignUp = () => {
     };
 
     const isValid = () => {
-        const formErrors = ErrorValidations.checkForm(inputData);
+        const formErrors = checkForm(inputData);
         return !Object.values(formErrors).some((error) => error !== '');
     }
 
@@ -86,13 +83,14 @@ const SignUp = () => {
                     {FormFieldsData.map((field) => (
                         <Box key={field.name} mb={2}>
                             {field.name === "password" || field.name === "confirmpassword" ? (
-                                <PasswordInputField
+                                <CustomTextField
                                     label={field.label}
                                     name={field.name}
                                     value={inputData[field.name] || ""}
-                                    onChange={handleChange}
+                                    onChange={(e)=>handleChange(e)}
                                     error={!!inputData.errors[field.name]}
-                                    helperText={inputData.errors[field.name] || " "}
+                                    helperText={inputData.errors[field.name] || ""}
+                                    isPasssword={true}
                                 />
                             ) : (
                                 <CustomTextField
@@ -105,8 +103,8 @@ const SignUp = () => {
                                     error={!!inputData.errors[field.name]}
                                     helperText={inputData.errors[field.name]}
                                     multiline={field.multiline || false}
-                                    rows={field.rows || 1}
                                     inputProps={field.name === "mobile" ? { maxLength: 10, pattern: "^[0-9]{10}$" } : {}}
+                                    fullWidth={true}
                                 />
                             )}
                         </Box>
@@ -116,7 +114,7 @@ const SignUp = () => {
                     </CustomButton>
                     <Typography variant="body2" align="center" className="text" mt={1}>
                         {config.message.haveAccount},{' '}
-                        <strong style={{ color: 'darkgreen', cursor: 'pointer', textDecoration:'none' }} onClick={() => navigate('/login')}>
+                        <strong style={{ color:'darkgreen', cursor: 'pointer', textDecoration:'none' }} onClick={() => navigate('/login')}>
                             {config.message.account}
                         </strong>
                     </Typography>

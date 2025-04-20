@@ -40,12 +40,16 @@ export const config = {
         invalid: "Invalid Input",
         alphabets: "Alphabets not allowed", 
         notBeZero:"Can't be zero",
-    },
+        getItemLocalStorage:"Error getting item from localStorage: ",
+        setItemLocalStorage: "Error setting item in localStorage: ",
+        removeItemLocalStorage: "Error removing item from localStorage: "
+    }, 
     Regex:{
         nameRegex:/^(?!.*\d)(?!.*\s\s)[a-zA-Z]+(?:\s[a-zA-Z]+)*$/,
         emailRegex: /^(?!.*\s)(?!.*[@]{2,})(?!.*\.\..*)(?!.*[#&+-])[a-z0-9.%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/,
         mobileRegex:/^\d{10}$/,
         passwordRegex:/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])\S{8,}$/,
+        dateRegex: /(dd|mm|yyyy)/i,
         taskRegex: /^[a-zA-Z0-9 ]{3,}$/,
         a:/[+\-*/%]{2,}/,
         b:/[+\-*%^/()=]/,
@@ -63,5 +67,7 @@ export const config = {
         dataStr:/[+\-*/]$/,
         checkDataStr:/\s*1\/100\s*$/,
         percentVal:/%/g,
+        operatorStartWith:/[+\-*/%]/g,
+        endWithOperator: /[+\-*/%]$/,
     },
 }

@@ -55,6 +55,7 @@ const theme = createTheme({
       },
       "& .MuiInputLabel-root": {
         fontSize: { xs: "1.2vh", sm: "1.5vh", md: "2vh" },
+        transform: "translate(14px, 12px) scale(1)",
       },
       "& .MuiFormHelperText-root": {
         fontSize: { xs: "1vh", sm: "1.2vh", md: "1.4vh" },

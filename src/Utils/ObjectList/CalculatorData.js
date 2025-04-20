@@ -1,5 +1,6 @@
 import BackspaceOutlinedIcon from '@mui/icons-material/BackspaceOutlined';
 const CalculatorData = [
+    // 1st division
     [
         {
             value: "toggle",
@@ -18,6 +19,7 @@ const CalculatorData = [
         },
 
     ],
+    // 2nd division
     [
         {
             value: "7",
@@ -32,6 +34,7 @@ const CalculatorData = [
             value: "*",
         }
     ],
+    // 3rd division
     [
         {
             value: "4",
@@ -47,6 +50,7 @@ const CalculatorData = [
             value: "-",
         }
     ],
+    // 4th division
     [
         {
             value: "1",
@@ -61,6 +65,7 @@ const CalculatorData = [
             value: "+",
         }
     ],
+    // 5th division
     [
         {
             value: "0",

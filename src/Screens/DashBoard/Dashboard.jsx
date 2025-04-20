@@ -2,10 +2,11 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Box, Typography, Card, CardActionArea, CardMedia, CardContent } from "@mui/material";
 
-import localStorageHelper from '../../Helpers/LocalStorageHelper/LocalStorageHelper';
 import './DashboardStyle.css'
-import { config, CardData } from "../../Utils";
-import {CustomButton} from '../../Components'
+import { CardData } from "../../Utils";
+import {localStorageHelper} from '../../Helpers'
+import {config} from '../../Utils'
+import {CustomButton} from "../../Components";
 
 const Dashboard = () => {
     const navigate = useNavigate();
@@ -79,27 +80,23 @@ const Dashboard = () => {
             </Box>
             {/* To-Do Section */}
             <Box display="flex" flexWrap="wrap" gap={5} justifyContent="center">
-                {CardData.map((e, index) => (
-                    <Card key={index} sx={{ maxWidth: 170 }}>
-                        <CardActionArea component={e.component} href={e.href} target={e.target} rel={e.rel}>
+                {CardData.map((event, index) => (
+                    <Card key={index} onClick={() => { if (event.action) { event.action(navigate) } }} sx={{ maxWidth: 170 }}>
+                        <CardActionArea component={event.component} href={event.href} target={event.target} rel={event.rel}>
                             <CardMedia
                                 component="img"
-                                height={e.height}
-                                width={e.width}
-                                image={e.image}
-                                alt={`Image for ${e.href}`}
+                                height={event.height}
+                                width={event.width}
+                                image={event.image}
+                                alt={`Image for ${event.href}`}
                             />
-                            <CardContent>
-                                <Typography gutterBottom variant="h5" component="div">
-                                    <CustomButton size="small" sx={{ marginLeft: 3, textTransform: 'none' }}
-                                        onClick={() => { if (e.action) { e.action(navigate) } }}
-                                    >
-                                        {e.image && e.image.includes("to-do") && "To-Do"}
-                                        {e.href && e.href.includes("chess") && "Chess"}
-                                        {e.image && e.image.includes("stopwatch") && "Stopwatch"}
-                                        {e.image && e.image.includes("calculator") && "Calculator"}
-                                        {e.image && e.image.includes("kbg") && "QR Code"}
-                                    </CustomButton>
+                            <CardContent size="small" sx={{ display:'flex', justifyContent:'center', textTransform: 'none' }}>
+                                <Typography gutterBottom variant="h6" component="div">
+                                        {event.image && event.image.includes("to-do") && "To-Do"}
+                                        {event.href && event.href.includes("chess") && "Chess"}
+                                        {event.image && event.image.includes("stopwatch") && "Stopwatch"}
+                                        {event.image && event.image.includes("calculator") && "Calculator"}
+                                        {event.image && event.image.includes("fJf") && "QR Code"}
                                 </Typography>
                             </CardContent>
                         </CardActionArea>

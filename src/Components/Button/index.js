@@ -1,1 +1,1 @@
-export {default as CustomButton} from '../Button/CustomButton'
+export {default as CustomButton} from './CustomButton'
